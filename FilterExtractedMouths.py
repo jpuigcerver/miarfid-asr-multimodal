@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.6
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from sys import argv, stderr, stdout
 from os import listdir
@@ -23,7 +23,7 @@ def GetDCT(f):
     imMatF = np.zeros((H,W), np.float32)
     imMatF[:oH, :oW] = imMat
     imMatF = imMatF / 255.0
-    dctMat = np.zeros((H,W), np.float32) #cv.CreateMat(H, W, cv.CV_32F)
+    dctMat = np.zeros((H,W), np.float32)
     cv.DCT(imMatF, dctMat, cv.CV_DXT_FORWARD)
     return dctMat
     
