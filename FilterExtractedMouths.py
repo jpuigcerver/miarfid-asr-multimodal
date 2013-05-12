@@ -7,8 +7,8 @@ from re import sub
 import cv
 import numpy as np
 
-DCT_H = 10
-DCT_W = 10
+DCT_H = 15
+DCT_W = 15
 
 def Usage():
     stdout.write('Usage: %s <dir>\n' % argv[0])
@@ -23,10 +23,10 @@ def GetDCT(f):
     imMatF = np.zeros((H,W), np.float32)
     imMatF[:oH, :oW] = imMat
     imMatF = imMatF / 255.0
-    dctMat = np.zeros((H,W), np.float32)
-    cv.DCT(imMatF, dctMat, cv.CV_DXT_FORWARD)
-    return dctMat
-    
+    dctMat = cv.CreateMat(H,W, cv.CV_32F) #np.zeros((H,W), np.float32)
+    cv.DCT(cv.fromarray(imMatF), dctMat, cv.CV_DXT_FORWARD)
+    return np.asarray(dctMat)
+
 def LoadImagesPaths(idir):
     data = {}
     for sent in listdir(idir):
@@ -49,8 +49,8 @@ def GetUnambiguousImages(data):
         for (frame, imgs) in frames.items():
             if len(imgs) == 1:
                 dct = np.array(
-                    reduce(lambda x,y: x+y, 
-                           GetDCT(imgs[0])[:DCT_H,:DCT_W].tolist(), 
+                    reduce(lambda x,y: x+y,
+                           GetDCT(imgs[0])[:DCT_H,:DCT_W].tolist(),
                            []))
                 user_sents = unambig.get(user, {})
                 sent_frames = user_sents.get(sent, {})
@@ -75,7 +75,7 @@ def FilterImages3(imgs, sent_frames):
     min_img = None
     for img in imgs:
         dct = np.array(
-                reduce(lambda x,y: x+y, 
+                reduce(lambda x,y: x+y,
                        GetDCT(img)[:DCT_H,:DCT_W].tolist(),
                        []))
         d = AvgDist(dct, sent_frames)
@@ -97,13 +97,12 @@ def FilterImages(data, unambig):
         for (frame, imgs) in frames.items():
             if len(imgs) == 1:
                 print imgs[0]
-            elif user not in unambig: 
+            elif user not in unambig:
                 print FilterImages1(imgs, unambig)
             elif sent not in unambig[user]:
                 print FilterImages2(imgs, unambig[user].values())
             else:
                 print FilterImages3(imgs, unambig[user][sent].values())
-    return filtered_images
 
 def main():
     if len(argv) == 0:

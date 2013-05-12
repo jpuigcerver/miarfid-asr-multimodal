@@ -24,6 +24,18 @@ while [ "${1:0:1}" = "-" ]; do
         -m)
             HMM="$2"; shift 2;
             ;;
+        -g)
+            GSF=(); shift 1;
+            while [ $# -gt 0 -a "${1:0:1}" != "-" ]; do
+                GSF=(${GSF[@]} "$1"); shift 1;
+            done
+            ;;
+        -w)
+            WIP=(); shift 1;
+            while [ $# -gt 0 -a "${1:0:1}" != "-" ]; do
+                WIP=(${WIP[@]} "-$1"); shift 1;
+            done
+            ;;
         -l)
             LM="$2"; shift 2;
             ;;
@@ -47,7 +59,7 @@ while [ "${1:0:1}" = "-" ]; do
             ;;
         *)
             echo "Unknown option: $1" >&2; exit 1;
-    esac    
+    esac
 done
 
 [ "$HMM" = "" ] && { echo "Acustic model expected. Use -m <model>." >&2; exit 1; }

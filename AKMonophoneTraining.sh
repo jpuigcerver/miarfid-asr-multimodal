@@ -7,8 +7,8 @@ TRANS=data/train_phon_trans.lst
 WDIR=work/train
 PROTO=audio_model.proto
 NG=64
-EM_IT1=8
-EM_IT2=4
+EM_IT1=12
+EM_IT2=8
 FORCE=0
 function usage () {
     cat <<EOF
